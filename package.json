@@ -15,6 +15,7 @@
     "eslint": "^8.38.0"
   },
   "dependencies": {
+    "discord.js-selfbot-v13": "^2.13.2",
     "dotenv": "^16.0.3"
   }
 }
