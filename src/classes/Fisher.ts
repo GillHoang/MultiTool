@@ -2,11 +2,12 @@ import { Base } from "./Base";
 import { MultiToolClient } from "./MultiToolClient";
 
 export class Fisher extends Base {
-    constructor(client: MultiToolClient) {
+    constructor(public client: MultiToolClient) {
         super(client);
     }
 
-    start() {
-        console.log("[Fisher] Started");
+    async start() {
+        console.log("[VF] Fisher started");
+
     }
 }
