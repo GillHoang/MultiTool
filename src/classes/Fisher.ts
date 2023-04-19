@@ -57,6 +57,7 @@ export class Fisher extends Base {
                     price: string;
                     desc: string;
                 }[];
+                balance?: string;
             };
         } = {};
         if (!embed) return;
@@ -91,7 +92,11 @@ export class Fisher extends Base {
             const listbait = description.match(
                 /<:.+?:\d+> \*\*(.+)\*\* - \$(\d+) - (.+)/g
             );
-            data.baitShop = { isShop: true, data: [] };
+            data.baitShop = {
+                isShop: true,
+                data: [],
+                balance: description.match(/Balance: \*\*\$(\d+)\*\*/)?.[1],
+            };
             if (listbait) {
                 for (const bait of listbait) {
                     const [, name, price, desc] = bait.match(
