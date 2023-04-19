@@ -1,5 +1,6 @@
 {
     "fisher": {
+        "enabled": true,
         "guildID": "953582097484877865",
         "channelID": "953582239957020692"
     }
