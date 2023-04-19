@@ -28,7 +28,7 @@ export class MultiToolClient<
             const { event } = await import(
                 path.join(__dirname, "..", "events", file)
             );
-            this[event.once ? "on" : "once"](file.split(".")[0], event.run.bind(null, this));
+            this[event.once ? "once" : "on"](file.split(".")[0], event.run.bind(null, this));
         }
     }
 

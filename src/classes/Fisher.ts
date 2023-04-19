@@ -1,3 +1,4 @@
+import { Message } from "discord.js-selfbot-v13";
 import { Base } from "./Base";
 import { MultiToolClient } from "./MultiToolClient";
 
@@ -5,6 +6,7 @@ export class Fisher extends Base {
     private guildID: string;
     private channelID: string;
     private botID = "574652751745777665";
+    public idle = false;
     constructor(public client: MultiToolClient) {
         super(client);
         this.guildID = this.client.config.fisher.guildID;
@@ -22,7 +24,80 @@ export class Fisher extends Base {
             this.channelID,
             this.botID,
             command,
-            ...args,
+            ...args
         );
+    }
+
+    enable() {
+        return this.client.config.fisher.enabled;
+    }
+
+    isMessageFromBot(message: Message) {
+        if (message.guildId !== this.guildID) return false;
+        if (message.channelId !== this.channelID) return false;
+        if (message.interaction?.user.id !== this.client.user?.id) return false;
+        return message.author.id === this.botID;
+    }
+
+    parseData(message: Message) {
+        const embed = message.embeds[0];
+        const data: {
+            inv?: {
+                balance?: string;
+                rod?: string;
+                biome?: string;
+                fishValue?: string;
+                baitName?: string;
+                baitRemain?: string;
+            };
+            baitShop?: {
+                name: string;
+                price: string;
+                desc: string;
+            }[];
+        } = {};
+        if (!embed) return;
+        const description = embed.description;
+        if (!description) return;
+        console.log(description);
+        if (embed.title?.includes("Inventory of")) {
+            data.inv = {
+                balance: description.match(/Balance: \*\*\$(\d+)\*\*/)?.[1],
+                rod: description.match(
+                    /Currently using <:.+?:\d+> \*\*(.+)\*\*/
+                )?.[1],
+                biome: description.match(
+                    /Current biome: <:.+?:\d+> \*\*(.+)\*\*/
+                )?.[1],
+                fishValue: description.match(
+                    /Fish Value: \$\*\*(\d+)\*\*/
+                )?.[1],
+                baitName: description.match(
+                    /Bait: <:.+?:\d+> \*\*(.+)\*\*/
+                )?.[1],
+                baitRemain: description.match(
+                    /Bait: <:.+?:\d+> \*\*(.+)\*\* \((\d+)\)/
+                )?.[2],
+            };
+        } else if (
+            embed.title?.includes(
+                "Bait is consumed PER CAST so make sure to stock up."
+            )
+        ) {
+            const listbait = description.match(
+                /<:.+?:\d+> \*\*(.+)\*\* - \$(\d+) - (.+)/g
+            );
+            if (listbait) {
+                for (const bait of listbait) {
+                    const [, name, price, desc] = bait.match(
+                        /<:.+?:\d+> \*\*(.+)\*\* - \$(\d+) - (.+)/
+                    )!;
+                    data?.baitShop?.push({ name, price, desc });
+                }
+            } else {
+                data.baitShop = [];
+            }
+        }
+        return data;
     }
 }
