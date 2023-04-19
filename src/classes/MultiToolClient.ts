@@ -1,4 +1,4 @@
-import { Client } from "discord.js-selfbot-v13";
+import { Client, UserResolvable } from "discord.js-selfbot-v13";
 import { config } from "../utils/constants";
 import fs from "fs";
 import path from "path";
@@ -27,6 +27,22 @@ export class MultiToolClient<
                 path.join(__dirname, "..", "events", file)
             );
             this.on(file.split(".")[0], event.run.bind(null, this));
+        }
+    }
+
+    public async sendSlash(
+        guildID: string,
+        channelID: string,
+        botID: string,
+        command: string,
+        ...args: any
+    ) {
+        const a = this.guilds.cache.get(guildID)?.channels.cache.get(channelID);
+        if (a?.isText()) {
+            await a.sendSlash(botID, command, ...args).catch(console.error);
+        }
+        else {
+            console.log("Channel is not text");
         }
     }
 }
