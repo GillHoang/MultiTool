@@ -1,4 +1,4 @@
-import { Client, UserResolvable } from "discord.js-selfbot-v13";
+import { Client } from "discord.js-selfbot-v13";
 import { config } from "../utils/constants";
 import fs from "fs";
 import path from "path";
