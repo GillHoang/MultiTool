@@ -28,7 +28,7 @@ export class MultiToolClient<
             const { event } = await import(
                 path.join(__dirname, "..", "events", file)
             );
-            this.on(file.split(".")[0], event.run.bind(null, this));
+            this[event.once ? "on" : "once"](file.split(".")[0], event.run.bind(null, this));
         }
     }
 
@@ -39,9 +39,9 @@ export class MultiToolClient<
         command: string,
         ...args: any
     ) {
-        const a = this.guilds.cache.get(guildID)?.channels.cache.get(channelID);
-        if (a?.isText()) {
-            await a.sendSlash(botID, command, ...args).catch(console.error);
+        const textchannel = this.guilds.cache.get(guildID)?.channels.cache.get(channelID);
+        if (textchannel?.isText()) {
+            return textchannel.sendSlash(botID, command, ...args).catch(console.error);
         } else {
             console.log("Channel is not text");
         }
