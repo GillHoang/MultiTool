@@ -26,7 +26,7 @@
 		"curly": ["error", "multi-line", "consistent"],
 		"dot-location": ["error", "property"],
 		"handle-callback-err": "off",
-		"indent": ["error", "tab"],
+		"indent": ["error", 4],
 		"keyword-spacing": "error",
 		"max-nested-callbacks": ["error", { "max": 5 }],
 		"max-statements-per-line": ["error", { "max": 2 }],
@@ -48,7 +48,7 @@
 		"no-useless-escape": "off",
 		"object-curly-spacing": ["error", "always"],
 		"prefer-const": "error",
-		"quotes": ["error", "single"],
+		//"quotes": ["error", "single"],
 		"semi": ["error", "always"],
 		"space-before-blocks": "error",
 		"space-before-function-paren": ["error", {
