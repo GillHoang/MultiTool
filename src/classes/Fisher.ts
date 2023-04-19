@@ -43,6 +43,7 @@ export class Fisher extends Base {
         const embed = message.embeds[0];
         const data: {
             inv?: {
+                isInv?: boolean;
                 balance?: string;
                 rod?: string;
                 biome?: string;
@@ -51,17 +52,20 @@ export class Fisher extends Base {
                 baitRemain?: string;
             };
             baitShop?: {
-                name: string;
-                price: string;
-                desc: string;
-            }[];
+                isShop?: boolean;
+                data: {
+                    name: string;
+                    price: string;
+                    desc: string;
+                }[];
+            };
         } = {};
         if (!embed) return;
         const description = embed.description;
         if (!description) return;
-        console.log(description);
         if (embed.title?.includes("Inventory of")) {
             data.inv = {
+                isInv: true,
                 balance: description.match(/Balance: \*\*\$(\d+)\*\*/)?.[1],
                 rod: description.match(
                     /Currently using <:.+?:\d+> \*\*(.+)\*\*/
@@ -79,23 +83,25 @@ export class Fisher extends Base {
                     /Bait: <:.+?:\d+> \*\*(.+)\*\* \((\d+)\)/
                 )?.[2],
             };
-        } else if (
+        }
+        if (
             embed.title?.includes(
-                "Bait is consumed PER CAST so make sure to stock up."
+                "Bait is consumed **PER CAST** so make sure to stock up."
             )
         ) {
             const listbait = description.match(
                 /<:.+?:\d+> \*\*(.+)\*\* - \$(\d+) - (.+)/g
             );
+            data.baitShop = { isShop: true, data: [] };
             if (listbait) {
                 for (const bait of listbait) {
                     const [, name, price, desc] = bait.match(
                         /<:.+?:\d+> \*\*(.+)\*\* - \$(\d+) - (.+)/
                     )!;
-                    data?.baitShop?.push({ name, price, desc });
+                    data?.baitShop?.data?.push({ name, price, desc });
                 }
             } else {
-                data.baitShop = [];
+                data.baitShop?.data && (data.baitShop.data = []);
             }
         }
         return data;
