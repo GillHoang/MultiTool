@@ -41,7 +41,7 @@ export class MultiToolClient<
     ) {
         const textchannel = this.guilds.cache.get(guildID)?.channels.cache.get(channelID);
         if (textchannel?.isText()) {
-            return textchannel.sendSlash(botID, command, ...args).catch(console.error);
+            return await textchannel.sendSlash(botID, command, ...args).catch(console.error);
         } else {
             console.log("Channel is not text");
         }

@@ -6,7 +6,6 @@ export class Fisher extends Base {
     private guildID: string;
     private channelID: string;
     private botID = "574652751745777665";
-    public idle = false;
     constructor(public client: MultiToolClient) {
         super(client);
         this.guildID = this.client.config.fisher.guildID;

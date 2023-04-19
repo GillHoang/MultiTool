@@ -7,14 +7,11 @@ export const event: MTEvent<"messageCreate"> = {
         if (fisher.enable() && fisher.isMessageFromBot(message)) {
             const data = fisher.parseData(message);
             if (data?.inv?.isInv && !data.inv.baitName) {
-                if (fisher.idle) return;
-                fisher.idle = true;
                 await fisher.sendSlash("shop bait");
             }
             if (data?.baitShop?.isShop) {
                 console.log(data.baitShop.data);
             }
-            fisher.idle = false;
         }
     },
 };
