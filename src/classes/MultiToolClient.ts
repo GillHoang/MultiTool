@@ -2,11 +2,13 @@ import { Client } from "discord.js-selfbot-v13";
 import { config } from "../utils/constants";
 import fs from "fs";
 import path from "path";
+import { Fisher } from "./Fisher";
 
 export class MultiToolClient<
     Ready extends boolean = boolean
 > extends Client<Ready> {
     public config = config;
+    public fisher: Fisher = new Fisher(this);
     constructor() {
         super({
             checkUpdate: false,
@@ -40,8 +42,7 @@ export class MultiToolClient<
         const a = this.guilds.cache.get(guildID)?.channels.cache.get(channelID);
         if (a?.isText()) {
             await a.sendSlash(botID, command, ...args).catch(console.error);
-        }
-        else {
+        } else {
             console.log("Channel is not text");
         }
     }

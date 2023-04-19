@@ -5,5 +5,7 @@ export const event: MTEvent<"ready"> = {
     once: true,
     run: async (client: MultiToolClient<true>) => {
         console.log(`Logged in as ${client.user.tag}!`);
+
+        await client.fisher.start();
     },
 };

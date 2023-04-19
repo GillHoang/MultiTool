@@ -1,5 +1,5 @@
 import { MultiToolClient } from "./MultiToolClient";
 
-export declare class Base {
-    constructor(client: MultiToolClient);
+export abstract class Base {
+    constructor(public client: MultiToolClient) {}
 }
