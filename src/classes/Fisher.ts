@@ -13,12 +13,11 @@ export class Fisher extends Base {
 
     async start() {
         console.log("[VF] Fisher started");
-
         await this.sendSlash("play");
     }
 
     async sendSlash(command: string, ...args: any) {
-        await this.client.sendSlash(
+        return await this.client.sendSlash(
             this.guildID,
             this.channelID,
             this.botID,
