@@ -7,7 +7,7 @@ export const event: MTEvent<"messageCreate"> = {
         if (fisher.enable() && fisher.isMessageFromBot(message)) {
             const data = fisher.parseData(message);
             if (data?.inv?.isInv && !data.inv.baitName) {
-                await fisher.sendSlash("shop bait");
+                return await fisher.sendSlash("shop bait");
             }
             if (data?.baitShop?.isShop) {
                 let maxItemCanBuy = 10;
@@ -20,7 +20,9 @@ export const event: MTEvent<"messageCreate"> = {
                 }
                 maxItemCanBuy = maxItemCanBuy === 0 ? 1 : maxItemCanBuy;
                 if (maxItemCanBuy > 0) {
-                    if (priceNumber * maxItemCanBuy > balanceNumber) return console.log("[VF] Can't buy bait");
+                    if (priceNumber * maxItemCanBuy > balanceNumber) {
+                        return fisher.sendSlash("fish");
+                    }
                     await fisher.sendSlash(
                         "buy",
                         `${data.baitShop.data[0].name}`,
