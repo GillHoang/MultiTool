@@ -1,8 +1,9 @@
-import { Client } from "discord.js-selfbot-v13";
+import { Client, ClientEvents } from "discord.js-selfbot-v13";
 import { config } from "../utils/constants";
 import fs from "fs";
 import path from "path";
 import { Fisher } from "./Fisher";
+import { MTEvent } from "../types";
 
 export class MultiToolClient<
     Ready extends boolean = boolean
@@ -22,13 +23,18 @@ export class MultiToolClient<
 
     public async loadEvents() {
         const files = await fs.promises.readdir(
-            path.join(__dirname, "..", "events"),
+            path.join(__dirname, "..", "events")
         );
         for (const file of files) {
-            const { event } = await import(
-                path.join(__dirname, "..", "events", file)
+            const {
+                event,
+            }: {
+                event: MTEvent<keyof ClientEvents>;
+            } = await import(path.join(__dirname, "..", "events", file));
+            this[event.once ? "once" : "on"](
+                event.name as never,
+                event.run.bind(null, this)
             );
-            this[event.once ? "once" : "on"](event.name, event.run.bind(null, this));
         }
     }
 
@@ -39,9 +45,13 @@ export class MultiToolClient<
         command: string,
         ...args: any
     ) {
-        const textchannel = this.guilds.cache.get(guildID)?.channels.cache.get(channelID);
+        const textchannel = this.guilds.cache
+            .get(guildID)
+            ?.channels.cache.get(channelID);
         if (textchannel?.isText()) {
-            return await textchannel.sendSlash(botID, command, ...args).catch(console.error);
+            return await textchannel
+                .sendSlash(botID, command, ...args)
+                .catch(console.error);
         } else {
             console.log("Channel is not text");
         }
