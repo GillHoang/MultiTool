@@ -80,8 +80,8 @@ export class Fisher extends Base {
                     /Bait: \*\*<:.+?:\d+> (.+)\*\* (.*)/
                 )?.[1],
                 baitRemain: description.match(
-                    /Bait: \*\*<:.+?:\d+> (.+)\*\* (.*)/
-                )?.[2].replace(/\(\)/g, "")
+                    /Bait: \*\*<:.+?:\d+> (.+?)\*\* \((\d+)\)/
+                )?.[2]
             };
         }
         if (
