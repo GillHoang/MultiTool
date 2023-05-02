@@ -8,27 +8,34 @@ export const event: MTEvent<"messageCreate"> = {
             const data = fisher.parseData(message);
             if (data?.inv?.isInv && !data.inv.baitName) {
                 return await fisher.sendSlash("shop bait");
-            }
-            if (data?.baitShop?.isShop) {
+            } else if (data?.baitShop?.isShop) {
                 let maxItemCanBuy = 10;
-                const price = data.baitShop.data[0].price;
+                const price = data.baitShop.data.at(-1)!.price;
                 const balance = data.baitShop.balance;
                 const priceNumber = Number(price.replace(/,/g, ""));
                 const balanceNumber = Number(balance?.replace(/,/g, "") ?? 1);
+
                 if (priceNumber * maxItemCanBuy > balanceNumber) {
                     maxItemCanBuy = Math.floor(balanceNumber / priceNumber);
                 }
-                maxItemCanBuy = maxItemCanBuy === 0 ? 1 : maxItemCanBuy;
+                maxItemCanBuy =
+                    maxItemCanBuy === 0
+                        ? 1
+                        : maxItemCanBuy > 10
+                            ? 10
+                            : maxItemCanBuy;
                 if (maxItemCanBuy > 0) {
                     if (priceNumber * maxItemCanBuy > balanceNumber) {
-                        return fisher.sendSlash("fish");
+                        return await fisher.sendSlash("fish");
                     }
                     await fisher.sendSlash(
                         "buy",
-                        `${data.baitShop.data[0].name}`,
+                        `${data.baitShop.data.at(-1)?.name}`,
                         `${maxItemCanBuy}`
                     );
                 }
+            } else {
+                return await fisher.sendSlash("fish");
             }
         }
     },

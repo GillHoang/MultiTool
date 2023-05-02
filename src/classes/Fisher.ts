@@ -66,7 +66,7 @@ export class Fisher extends Base {
         if (embed.title?.includes("Inventory of")) {
             data.inv = {
                 isInv: true,
-                balance: description.match(/Balance: \*\*\$(\d+)\*\*/)?.[1],
+                balance: description.match(/Balance: \*\*\$(.*)\*\*/)?.[1],
                 rod: description.match(
                     /Currently using <:.+?:\d+> \*\*(.+)\*\*/
                 )?.[1],
@@ -77,11 +77,11 @@ export class Fisher extends Base {
                     /Fish Value: \$\*\*(\d+)\*\*/
                 )?.[1],
                 baitName: description.match(
-                    /Bait: <:.+?:\d+> \*\*(.+)\*\*/
+                    /Bait: \*\*<:.+?:\d+> (.+)\*\* (.*)/
                 )?.[1],
                 baitRemain: description.match(
-                    /Bait: <:.+?:\d+> \*\*(.+)\*\* \((\d+)\)/
-                )?.[2],
+                    /Bait: \*\*<:.+?:\d+> (.+)\*\* (.*)/
+                )?.[2].replace(/\(\)/g, "")
             };
         }
         if (
@@ -95,7 +95,7 @@ export class Fisher extends Base {
             data.baitShop = {
                 isShop: true,
                 data: [],
-                balance: description.match(/Balance: \*\*\$(\d+)\*\*/)?.[1],
+                balance: description.match(/Your balance: \*\*\$(.*)\*\*/)?.[1],
             };
             if (listbait) {
                 for (const bait of listbait) {
