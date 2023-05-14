@@ -1,11 +1,13 @@
 import { Message } from "discord.js-selfbot-v13";
 import { Base } from "./Base";
 import { MultiToolClient } from "./MultiToolClient";
+import { randomInRange } from "../utils/utils";
 
 export class Fisher extends Base {
     private guildID: string;
     private channelID: string;
     private botID = "574652751745777665";
+    public pending = false;
     constructor(public client: MultiToolClient) {
         super(client);
         this.guildID = this.client.config.fisher.guildID;
@@ -81,7 +83,7 @@ export class Fisher extends Base {
                 )?.[1],
                 baitRemain: description.match(
                     /Bait: \*\*<:.+?:\d+> (.+?)\*\* \((\d+)\)/
-                )?.[2]
+                )?.[2],
             };
         }
         if (
@@ -109,5 +111,14 @@ export class Fisher extends Base {
             }
         }
         return data;
+    }
+
+    playFish() {
+        if (this.pending) return;
+        this.pending = true;
+        setTimeout(() => {
+            this.pending = false;
+            this.sendSlash("fish");
+        }, randomInRange(4000, 5500));
     }
 }
