@@ -8,6 +8,7 @@ export class Fisher extends Base {
     private channelID: string;
     private botID = "574652751745777665";
     public pending = false;
+    public isVerify = false;
     constructor(public client: MultiToolClient) {
         super(client);
         this.guildID = this.client.config.fisher.guildID;
@@ -15,6 +16,7 @@ export class Fisher extends Base {
     }
 
     async start() {
+        if (this.isVerify) return console.log("[VF] Bot is verify");
         console.log("[VF] Fisher started");
         await this.sendSlash("play");
     }
@@ -113,12 +115,23 @@ export class Fisher extends Base {
         return data;
     }
 
-    playFish() {
+    async playFish() {
         if (this.pending) return;
         this.pending = true;
-        setTimeout(() => {
+        setTimeout(async () => {
             this.pending = false;
-            this.sendSlash("fish");
+            await this.sendSlash("fish");
         }, randomInRange(4000, 5500));
+    }
+
+    async checkVerify(message: Message) {
+        const embed = message.embeds[0];
+        console.log("🚀 ~ file: Fisher.ts:129 ~ Fisher ~ checkVerify ~ embed:", embed);
+        if (!embed) return;
+        if (embed.title?.includes("Anti-bot") || embed.footer?.text.includes("Note: this captcha")) {
+            this.isVerify = true;
+            this.client.destroy();
+            process.exit(0);
+        }
     }
 }
