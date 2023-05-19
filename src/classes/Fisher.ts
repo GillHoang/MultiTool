@@ -126,10 +126,10 @@ export class Fisher extends Base {
 
     async checkVerify(message: Message) {
         const embed = message.embeds[0];
-        console.log("🚀 ~ file: Fisher.ts:129 ~ Fisher ~ checkVerify ~ embed:", embed);
         if (!embed) return;
-        if (embed.title?.includes("Anti-bot") || embed.footer?.text.includes("Note: this captcha")) {
+        if (embed.title === "Anti-bot\n/verify <result>") {
             this.isVerify = true;
+            console.log("[VF] Bot is verify");
             this.client.destroy();
             process.exit(0);
         }
